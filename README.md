@@ -16,4 +16,4 @@ Let IoT devices power your Unity game!
 - Build and run server on localhost
 - Run the demo game on localhost
 - Run `hub_button.py` script on Raspberry Pi
-- Press the button should make the ball fly upwards
+- Pressing the button should make the ball fly upwards
