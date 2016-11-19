@@ -8,17 +8,18 @@ namespace Unioty
 {
     public class ControllerHubListener : MonoBehaviour
     {
+        public string Host = "localhost";
+        public int Port = 25556;
+        public event InputReceiveEventHandler InputReceived;
+        public DeviceButton[] DeviceButtons;
+
         TcpClient tcpClient;
         NetworkStream networkStream;
-        string Host = "localhost";
-        int Port = 25556;
         byte[] buf = new byte[3];
 
         Queue inputQueue = new Queue();
         Thread socketThread;
         EventWaitHandle updateWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-
-        public event InputReceiveEventHandler InputReceived;
 
         public bool SocketReady
         {
@@ -36,8 +37,10 @@ namespace Unioty
                 while (true)
                 {
                     updateWaitHandle.WaitOne();
-                    // Tell the server that we want the state of 0x01 dev's 0x01 ctrl
-                    WriteSocket(new byte[] { 0x01, 0x01 });
+                    foreach (var devBtn in DeviceButtons)
+                    {
+                        WriteSocket(devBtn.GetRequestMessage());
+                    }
                     // Read the state
                     ReadSocket();
                 }
@@ -95,6 +98,10 @@ namespace Unioty
             {
                 // Read 3 bytes, [dev id, ctrl id, ctrl state]
                 int readLen = networkStream.Read(buf, 0, 3);
+                if (readLen != 3)
+                {
+                    // Error: unexpected read length
+                }
                 var args = new InputReceiveEventArgs(buf[0], buf[1], buf[2]);
                 // Enqueue the input. We process it later during Update
                 Queue.Synchronized(inputQueue).Enqueue(args);

@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BallController.cs" />
     <Compile Include="Assets\Scripts\Unioty\ControllerHubListener.cs" />
+    <Compile Include="Assets\Scripts\Unioty\DeviceButton.cs" />
     <Compile Include="Assets\Scripts\Unioty\InputReceiveEventArgs.cs" />
     <Compile Include="Assets\Scripts\Unioty\InputReceiveEventHandler.cs" />
   </ItemGroup>
