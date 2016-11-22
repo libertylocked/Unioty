@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9310C670-7FD7-2AC5-DB57-70AA36EA340F}</ProjectGuid>
+    <ProjectGuid>{FEBEF455-00FB-FF62-644F-B47EA751ECA0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\BallController.cs" />
     <Compile Include="Assets\Scripts\Unioty\ControllerHubListener.cs" />
-    <Compile Include="Assets\Scripts\Unioty\DeviceButton.cs" />
+    <Compile Include="Assets\Scripts\Unioty\DeviceControl.cs" />
     <Compile Include="Assets\Scripts\Unioty\InputReceiveEventArgs.cs" />
     <Compile Include="Assets\Scripts\Unioty\InputReceiveEventHandler.cs" />
   </ItemGroup>

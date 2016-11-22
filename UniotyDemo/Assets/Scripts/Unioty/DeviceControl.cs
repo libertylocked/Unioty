@@ -3,14 +3,14 @@
 namespace Unioty
 {
     [Serializable]
-    public class DeviceButton
+    public class DeviceControl
     {
         public byte DeviceID;
         public byte ControlID;
 
         byte[] message;
         
-        public DeviceButton(byte DeviceID, byte ControlID)
+        public DeviceControl(byte DeviceID, byte ControlID)
         {
             this.DeviceID = DeviceID;
             this.ControlID = ControlID;
