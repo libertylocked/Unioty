@@ -102,7 +102,7 @@ namespace Unioty
 
         void WriteSocket(byte[] data)
         {
-            if (!tcpClient.Connected) return;
+            if (tcpClient == null || !tcpClient.Connected) return;
             try
             {
                 networkStream.Write(data, 0, data.Length);
@@ -116,10 +116,10 @@ namespace Unioty
 
         void ReadSocket()
         {
-            if (!tcpClient.Connected) return;
+            if (tcpClient == null || !tcpClient.Connected) return;
             try
             {
-                if (networkStream.DataAvailable)
+                while (networkStream.DataAvailable)
                 {
                     // Read 3 bytes, [dev id, ctrl id, ctrl state]
                     int readLen = networkStream.Read(readBuffer, 0, 3);
@@ -141,7 +141,7 @@ namespace Unioty
 
         void CloseSocket()
         {
-            if (!tcpClient.Connected) return;
+            if (tcpClient == null || !tcpClient.Connected) return;
             tcpClient.Close();
         }
 

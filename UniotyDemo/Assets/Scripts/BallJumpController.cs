@@ -5,7 +5,8 @@ public class BallJumpController : MonoBehaviour
 {
     UniotyMaster uniotyMaster;
     Rigidbody rb;
-    bool flyUp = false;
+    bool buttonDownPrev = false;
+    bool buttonDown = false;
 
     public byte DeviceID = 0x01;
     public byte ControlID = 0x01;
@@ -19,10 +20,12 @@ public class BallJumpController : MonoBehaviour
 
     void Update ()
     {
-        if (flyUp)
+        // Jump on rising edge of the button state (0 -> 1)
+        if (buttonDown && !buttonDownPrev)
         {
             rb.velocity = (Vector3.up * 5.0f);
         }
+        buttonDownPrev = buttonDown;
     }
 
     void OnDestroy()
@@ -36,6 +39,6 @@ public class BallJumpController : MonoBehaviour
     {
         // Move the ball upwards if the control state is 0x01 (pressed)
         // This event may not be raised every frame - need to save the state
-        flyUp = e.State == 0x01;
+        buttonDown = e.State == 0x01;
     }
 }
