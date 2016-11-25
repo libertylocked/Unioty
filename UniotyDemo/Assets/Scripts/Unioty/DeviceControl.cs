@@ -5,7 +5,7 @@ namespace Unioty
     //[Serializable]
     public class DeviceControl
     {
-        public event InputReceivedEventHandler InputReceived;
+        public event DataReceivedEventHandler DataReceived;
 
         public byte DeviceID
         {
@@ -19,21 +19,10 @@ namespace Unioty
             private set;
         }
 
-        /// <summary>
-        /// Gets the message required by the server to query the status 
-        /// of this control.
-        /// </summary>
-        public byte[] QueryMessage
-        {
-            get;
-            private set;
-        }
-        
         public DeviceControl(byte DeviceID, byte ControlID)
         {
             this.DeviceID = DeviceID;
             this.ControlID = ControlID;
-            QueryMessage = new byte[] { DeviceID, ControlID };
         }
 
         public DeviceControl(int controlcode)
@@ -41,9 +30,9 @@ namespace Unioty
         { }
 
         #region Public methods
-        public void RaiseInputReceivedEvent(InputReceivedEventArgs e)
+        public void RaiseDataReceivedEvent(DataReceivedEventArgs e)
         {
-            InputReceived(this, e);
+            DataReceived(this, e);
         }
 
         #endregion
