@@ -63,6 +63,8 @@ class UniotyHub(object):
 
     def connect_tcp(self):
         """Set up TCP connection to the server"""
+        if self.sock_tcp != None:
+            self.sock_tcp.close()
         self.sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         intro_message = bytearray()
         intro_message.append(self.device_id)
