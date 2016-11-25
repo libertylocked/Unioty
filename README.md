@@ -5,10 +5,10 @@ Connect IoT devices to your Unity game!
 - Allows IoT devices to send data to your game
 - Both TCP and UDP are supported!
   - TCP for triggers (e.g. button presses and releases)
-  - UDP for analog data (e.g. temperature readings)
+  - UDP for digital and analog data (e.g. temperature readings, ultrasonic ranger readings)
 - Event-based callbacks: GameObjects who subscribe to a data source will be notified when data is ready
 
-## Use cases
+## Possible use cases
 - Real time sensor data visualization
 - Game peripherals
 
