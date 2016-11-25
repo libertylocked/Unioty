@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.5f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -63,11 +65,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BallJumpController.cs" />
+    <Compile Include="Assets\Scripts\Demo1\BallController.cs" />
+    <Compile Include="Assets\Scripts\Demo1\TemperatureDisplayController.cs" />
+    <Compile Include="Assets\Scripts\Unioty\DataReceivedCallback.cs" />
     <Compile Include="Assets\Scripts\Unioty\DeviceControl.cs" />
-    <Compile Include="Assets\Scripts\Unioty\InputReceivedEventArgs.cs" />
-    <Compile Include="Assets\Scripts\Unioty\InputReceivedEventHandler.cs" />
-    <Compile Include="Assets\Scripts\Unioty\UniotyMaster.cs" />
+    <Compile Include="Assets\Scripts\Unioty\DataReceivedEventArgs.cs" />
+    <Compile Include="Assets\Scripts\Unioty\DataReceivedEventHandler.cs" />
+    <Compile Include="Assets\Scripts\Unioty\WriteLogDelegate.cs" />
+    <Compile Include="Assets\Scripts\Unioty\PayloadType.cs" />
+    <Compile Include="Assets\Scripts\Unioty\UniotyMasterScript.cs" />
+    <Compile Include="Assets\Scripts\Unioty\UniotyServer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
