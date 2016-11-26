@@ -201,7 +201,6 @@ UniotyDemo/*.sln
 ExportedObj/
 .consulo/
 *.unityproj
-*.user
 *.userprefs
 *.booproj
 *.svd
