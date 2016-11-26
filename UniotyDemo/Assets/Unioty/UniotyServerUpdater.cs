@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Unioty
 {
     /// <summary>
-    /// Wrapper of UnityServer that uses thread-safe event-based callbacks 
+    /// Wrapper of UniotyServer that uses thread-safe event-based callbacks 
     /// </summary>
     public class UniotyServerUpdater : IUniotyServer, IUpdate
     {
