@@ -67,14 +67,19 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Demo1\BallController.cs" />
     <Compile Include="Assets\Scripts\Demo1\TemperatureDisplayController.cs" />
-    <Compile Include="Assets\Scripts\Unioty\DataReceivedCallback.cs" />
-    <Compile Include="Assets\Scripts\Unioty\DeviceControl.cs" />
-    <Compile Include="Assets\Scripts\Unioty\DataReceivedEventArgs.cs" />
-    <Compile Include="Assets\Scripts\Unioty\DataReceivedEventHandler.cs" />
-    <Compile Include="Assets\Scripts\Unioty\WriteLogDelegate.cs" />
-    <Compile Include="Assets\Scripts\Unioty\PayloadType.cs" />
-    <Compile Include="Assets\Scripts\Unioty\UniotyMasterScript.cs" />
-    <Compile Include="Assets\Scripts\Unioty\UniotyServer.cs" />
+    <Compile Include="Assets\Scripts\Demo1\UniotyMasterScript.cs" />
+    <Compile Include="Assets\Unioty\DataReceivedCallback.cs" />
+    <Compile Include="Assets\Unioty\DataReceivedEventArgs.cs" />
+    <Compile Include="Assets\Unioty\DataReceivedEventHandler.cs" />
+    <Compile Include="Assets\Unioty\DeviceControl.cs" />
+    <Compile Include="Assets\Unioty\IUniotyServer.cs" />
+    <Compile Include="Assets\Unioty\IUpdate.cs" />
+    <Compile Include="Assets\Unioty\Payload.cs" />
+    <Compile Include="Assets\Unioty\PayloadType.cs" />
+    <Compile Include="Assets\Unioty\UniotyServer.cs" />
+    <Compile Include="Assets\Unioty\UniotyServerUpdater.cs" />
+    <Compile Include="Assets\Unioty\WriteLogDelegate.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

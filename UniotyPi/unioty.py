@@ -98,7 +98,7 @@ def setup(device_id, server_ip, server_port):
 
 def main():
     """The main function. For testing only"""
-    hub = setup(0x01, 'localhost', 25555)
+    hub = setup(0x01, 'localhost', 25556)
     # UDP test writes
     hub.write_udp_float(0x01, 9.45)
     hub.write_udp_int(0x02, 1999)

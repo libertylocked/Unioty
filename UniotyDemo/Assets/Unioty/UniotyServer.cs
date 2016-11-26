@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Unioty
 {
-    class UniotyServer
+    public class UniotyServer : IUniotyServer
     {
         bool started = false;
         WriteLogDelegate WriteLog;
@@ -150,44 +150,13 @@ namespace Unioty
 
         void ProcessData(byte devID, byte ctrlID, PayloadType payloadType, byte[] payloadRaw)
         {
-            // Converts payload to the corresponding type
-            object payloadObject = payloadRaw;
-
-            if (!BitConverter.IsLittleEndian
-                && payloadType != PayloadType.String && payloadType != PayloadType.Raw)
-            {
-                payloadRaw.Reverse();
-            }
-
-            if (payloadType == PayloadType.Float32)
-            {
-                payloadObject = BitConverter.ToSingle(payloadRaw, 0);
-            }
-            else if (payloadType == PayloadType.Int32)
-            {
-                payloadObject = BitConverter.ToInt32(payloadRaw, 0);
-            }
-            else if (payloadType == PayloadType.Byte)
-            {
-                if (payloadRaw.Length < 1)
-                    throw new ArgumentException("Payload array must have at least 1 byte");
-                payloadObject = payloadRaw[0];
-            }
-            else if (payloadType == PayloadType.String)
-            {
-                payloadObject = Encoding.ASCII.GetString(payloadRaw);
-            }
-            else if (payloadType == PayloadType.Raw)
-            {
-                // Convertion not needed
-            }
-            else
-            {
-                throw new ArgumentException("Unknown payload type!");
-            }
+            Payload payload = new Payload(payloadType, payloadRaw);
 
             // Invoke the data recv callback function
-            DataRecv(devID, ctrlID, payloadType, payloadObject);
+            if (DataRecv != null)
+            {
+                DataRecv.Invoke(devID, ctrlID, payload);
+            }
         }
     }
 }

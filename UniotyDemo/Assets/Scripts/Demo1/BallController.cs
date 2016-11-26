@@ -6,10 +6,6 @@ public class BallController : MonoBehaviour
     UniotyMasterScript uniotyMaster;
     Rigidbody rb;
 
-    bool buttonDownPrev = false;
-    bool buttonDown = false;
-    float scale = 1.0f;
-
     public byte DeviceID = 0x01;
     public byte ControlID_Button = 0x01;
     public byte ControlID_MagSwitch = 0x02;
@@ -24,15 +20,7 @@ public class BallController : MonoBehaviour
 
     void Update ()
     {
-        // Jump on rising edge of the button state (0 -> 1)
-        if (buttonDown && !buttonDownPrev)
-        {
-            rb.velocity = (Vector3.up * 5.0f);
-        }
-        buttonDownPrev = buttonDown;
-
-        // Make ball larger if mag switch is high
-        transform.localScale = new Vector3(scale, scale, scale);
+        
     }
 
     void OnDestroy()
@@ -47,18 +35,20 @@ public class BallController : MonoBehaviour
     {
         // Move the ball upwards if the control state is 0x01 (pressed)
         // This event is not raised every frame - only when state changes
-        buttonDown = ((byte)e.Payload == 1);
+        if ((byte)e.Payload.Data == 1)
+        {
+            rb.velocity = (Vector3.up * 5.0f);
+        }
     }
 
     void OnMagSwitchDataReceived(object sender, DataReceivedEventArgs e)
     {
-        if ((byte)e.Payload == 1)
+        // Like the button event, this is also only raised when the state changes
+        float scale = 1.0f;
+        if ((byte)e.Payload.Data == 1)
         {
             scale = 2.0f;
         }
-        else
-        {
-            scale = 1.0f;
-        }
+        transform.localScale = new Vector3(scale, scale, scale);
     }
 }

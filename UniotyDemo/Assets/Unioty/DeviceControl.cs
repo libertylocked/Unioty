@@ -1,10 +1,14 @@
-﻿using System;
-
-namespace Unioty
+﻿namespace Unioty
 {
-    //[Serializable]
+    /// <summary>
+    /// Represents a control in a device. Must be unique per Unioty server
+    /// </summary>
     public class DeviceControl
     {
+        /// <summary>
+        /// The event will be raised during a game tick, after data from this DeviceControl has been received. 
+        /// Must only be raised during a game update, to ensure thread-safety
+        /// </summary>
         public event DataReceivedEventHandler DataReceived;
 
         public byte DeviceID

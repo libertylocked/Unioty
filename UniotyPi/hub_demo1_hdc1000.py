@@ -17,8 +17,9 @@ def main():
     hdc.Config()
 
     while True:
-        print 'Temperature: %.2f C' % hdc.Temperature()
-        hub.write_udp_float(HDC_CTRL_ID, hdc.Temperature())
+        temperature = hdc.Temperature()
+        print 'Temperature: %.2f C' % temperature
+        hub.write_udp_float(HDC_CTRL_ID, temperature)
         time.sleep(0.5)
 
 if __name__ == "__main__":

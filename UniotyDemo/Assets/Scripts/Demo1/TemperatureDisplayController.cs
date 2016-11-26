@@ -29,7 +29,7 @@ public class TemperatureDisplayController : MonoBehaviour
 
     void OnHDCDataReceived(object sender, DataReceivedEventArgs e)
     {
-        float temperature = (float)e.Payload;
+        float temperature = (float)e.Payload.Data;
         textMesh.text = string.Format("{0} C", temperature);
     }
 }
