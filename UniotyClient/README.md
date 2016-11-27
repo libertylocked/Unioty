@@ -16,8 +16,8 @@
 #### Running the demo
 - Connect Grove button to `D3`, magnetic switch to `D2`, HDC1000 to any I2C port
 - Change the server address hardcoded in Python scripts
-  - Edit `UniotyPi/hub_demo1_buttons.py` and change the server address
-  - Edit `UniotyPi/hub_demo1_hdc1000.py` and change the server address
+  - Edit `hub_demo1_buttons.py` and change the server address
+  - Edit `hub_demo1_hdc1000.py` and change the server address
 - Run the demo
   - Run the `demo1` scene in Unity
   - Run `hub_demo1_buttons.py` and `hub_demo1_hdc1000.py` on Raspberry Pi
