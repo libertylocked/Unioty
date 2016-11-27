@@ -3,7 +3,7 @@ using Unioty;
 
 public class BallController : MonoBehaviour
 {
-    UniotyMasterScript uniotyMaster;
+    UniotyMasterController uniotyMaster;
     Rigidbody rb;
 
     public byte DeviceID = 0x01;
@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour
     void Start ()
     {
         rb = GetComponent<Rigidbody>();
-        uniotyMaster = FindObjectOfType<UniotyMasterScript>();
+        uniotyMaster = FindObjectOfType<UniotyMasterController>();
         uniotyMaster.GetDeviceControl(DeviceID, ControlID_Button).DataReceived += OnButtonDataReceived;
         uniotyMaster.GetDeviceControl(DeviceID, ControlID_MagSwitch).DataReceived += OnMagSwitchDataReceived;
     }

@@ -3,7 +3,7 @@ using Unioty;
 
 public class TemperatureDisplayController : MonoBehaviour
 {
-    UniotyMasterScript uniotyMaster;
+    UniotyMasterController uniotyMaster;
     TextMesh textMesh;
 
     public byte DeviceID = 0x01;
@@ -11,7 +11,7 @@ public class TemperatureDisplayController : MonoBehaviour
 
     void Start()
     {
-        uniotyMaster = FindObjectOfType<UniotyMasterScript>();
+        uniotyMaster = FindObjectOfType<UniotyMasterController>();
         uniotyMaster.GetDeviceControl(DeviceID, ControlID_HDC1000).DataReceived += OnHDCDataReceived;
         textMesh = GetComponent<TextMesh>();
     }

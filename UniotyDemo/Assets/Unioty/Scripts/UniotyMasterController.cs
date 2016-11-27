@@ -1,12 +1,7 @@
 ﻿using UnityEngine;
-using System.Collections;
-using System;
-using System.Net.Sockets;
-using System.Threading;
-using System.Collections.Generic;
 using Unioty;
 
-public class UniotyMasterScript : MonoBehaviour
+public class UniotyMasterController : MonoBehaviour
 {
     public int Port = 25556;
 
