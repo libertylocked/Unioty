@@ -4,12 +4,15 @@
 - `unioty.py` is the Unioty client library
 
 ## Demos
+
 ### Demo 1
+
 #### Requirements
 - Hardware Requirements
   - Requires Raspberry Pi, GrovePi, Grove Button, Grove Magnetic Switch, Grove HDC1000
 - Software Requirements
-  - Copy [grovepi.py](https://github.com/DexterInd/GrovePi/blob/master/Software/Python/grovepi.py) and [grove_i2c_temp_hum_hdc1000.py](https://github.com/DexterInd/GrovePi/blob/master/Software/Python/grove_i2c_temp_hum_hdc1000/grove_i2c_temp_hum_hdc1000.py) from Dexter Industries [GrovePi](https://github.com/DexterInd/GrovePi) repository to this folder.
+  - Copy [grovepi.py](https://github.com/DexterInd/GrovePi/blob/master/Software/Python/grovepi.py) and [grove_i2c_temp_hum_hdc1000.py](https://github.com/DexterInd/GrovePi/blob/master/Software/Python/grove_i2c_temp_hum_hdc1000/grove_i2c_temp_hum_hdc1000.py) from Dexter Industries [GrovePi](https://github.com/DexterInd/GrovePi) repository to this folder
+
 #### Running the demo
 - Connect Grove button to `D3`, magnetic switch to `D2`, HDC1000 to any I2C port
 - Change the server address hardcoded in Python scripts
