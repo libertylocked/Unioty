@@ -4,6 +4,7 @@ using Unioty;
 public class UniotyMasterController : MonoBehaviour
 {
     public int Port = 25556;
+    public bool Log = true;
 
     UniotyServerUpdater serverUpdater;
 
@@ -22,7 +23,14 @@ public class UniotyMasterController : MonoBehaviour
 
     void Awake()
     {
-        serverUpdater = new UniotyServerUpdater(Port, Debug.LogFormat);
+        if (Log)
+        {
+            serverUpdater = new UniotyServerUpdater(Port, Debug.LogFormat);
+        }
+        else
+        {
+            serverUpdater = new UniotyServerUpdater(Port, null);
+        }
         serverUpdater.Start();
     }
 
