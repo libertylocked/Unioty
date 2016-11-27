@@ -58,7 +58,7 @@ namespace Unioty
             {
                 udpListener = new UdpClient(Port);
                 IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, Port);
-                WriteLog("Listening UDP {0}", Port);
+                if (WriteLog != null) WriteLog.Invoke("Listening UDP {0}", Port);
 
                 while (true)
                 {
@@ -74,7 +74,7 @@ namespace Unioty
                     }
                     catch (Exception exc)
                     {
-                        WriteLog(exc.ToString());
+                        if (WriteLog != null) WriteLog.Invoke(exc.ToString());
                     }
                 }
             });
@@ -84,7 +84,7 @@ namespace Unioty
             {
                 tcpListener = new TcpListener(IPAddress.Any, Port);
                 tcpListener.Start();
-                WriteLog("Listening TCP {0}", Port);
+                if (WriteLog != null) WriteLog.Invoke("Listening TCP {0}", Port);
                 StartAcceptTCP();
             });
         }
@@ -112,7 +112,7 @@ namespace Unioty
                     throw new IOException("Unexpected read in device ID");
                 }
                 devID = buffer[0];
-                WriteLog("TCP: Device {0} connected", devID);
+                if (WriteLog != null) WriteLog.Invoke("TCP: Device {0} connected", devID);
 
                 while (client.Connected)
                 {
@@ -139,11 +139,11 @@ namespace Unioty
             }
             catch (Exception exc)
             {
-                WriteLog(exc.ToString());
+                if (WriteLog != null) WriteLog.Invoke(exc.ToString());
             }
             finally
             {
-                WriteLog("TCP: Device {0} disconnected", devID);
+                if (WriteLog != null) WriteLog.Invoke("TCP: Device {0} disconnected", devID);
                 client.Close();
             }
         }
