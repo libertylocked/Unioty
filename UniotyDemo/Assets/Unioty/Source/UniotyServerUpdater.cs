@@ -8,9 +8,11 @@ namespace Unioty
     /// </summary>
     public class UniotyServerUpdater : IUniotyServer, IUpdate
     {
+        const int MAX_EVENTS_PER_UPDATE = 20;
+
         UniotyServer server;
         Dictionary<int, DeviceControl> controlMap = new Dictionary<int, DeviceControl>();
-        Queue deviceDataQueue = new Queue(); // Queue used to read data from device
+        Queue deviceDataQueue = Queue.Synchronized(new Queue()); // Queue used to read data from device
 
         public int Port
         {
@@ -34,9 +36,10 @@ namespace Unioty
 
         public void Update()
         {
-            if (Queue.Synchronized(deviceDataQueue).Count > 0)
+            for (int i = 0; i < MAX_EVENTS_PER_UPDATE; i++)
             {
-                var e = Queue.Synchronized(deviceDataQueue).Dequeue();
+                if (deviceDataQueue.Count <= 0) break;
+                var e = deviceDataQueue.Dequeue();
                 if (e != null)
                 {
                     // Raise the received event for this control
@@ -69,7 +72,7 @@ namespace Unioty
         void OnDataReceived(byte devID, byte ctrlID, Payload payload)
         {
             var args = new DataReceivedEventArgs(devID, ctrlID, payload);
-            Queue.Synchronized(deviceDataQueue).Enqueue(args);
+            deviceDataQueue.Enqueue(args);
         }
     }
 }
