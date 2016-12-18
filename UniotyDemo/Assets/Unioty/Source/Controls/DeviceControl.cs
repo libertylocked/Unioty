@@ -1,16 +1,20 @@
-﻿namespace Unioty
+﻿namespace Unioty.Controls
 {
     /// <summary>
     /// Represents a control in a device. Must be unique per Unioty server
     /// </summary>
-    public class DeviceControl
+    public class DeviceControl : IUpdate
     {
+        Payload payload;
+        bool payloadChanged = false;
+
         /// <summary>
-        /// The event will be raised during a game tick, after data from this DeviceControl has been received. 
+        /// The event is raised when Update is called, after data on this DeviceControl has changed. 
         /// Must only be raised during a game update, to ensure thread-safety
         /// </summary>
-        public event DataReceivedEventHandler DataReceived;
+        public event DataChangedEventHandler DataChanged;
 
+        #region Properties
         public byte DeviceID
         {
             get;
@@ -23,6 +27,28 @@
             private set;
         }
 
+        public Payload Payload
+        {
+            get
+            {
+                return payload;
+            }
+            set
+            {
+                payload = value;
+                payloadChanged = true;
+            }
+        }
+
+        public int ControlCode
+        {
+            get
+            {
+                return GetControlCode(this.DeviceID, this.ControlID);
+            }
+        }
+        #endregion
+
         public DeviceControl(byte DeviceID, byte ControlID)
         {
             this.DeviceID = DeviceID;
@@ -34,11 +60,20 @@
         { }
 
         #region Public methods
-        public void RaiseDataReceivedEvent(DataReceivedEventArgs e)
+        public void Update()
         {
-            DataReceived(this, e);
+            // If payload is changed between updates, raise the event.
+            // This ensures that the event is only raised once per Update maximum
+            if (payloadChanged)
+            {
+                // Raise the event
+                if (DataChanged != null)
+                {
+                    DataChanged(this, new DataChangedEventArgs(this));
+                }
+                payloadChanged = false;
+            }
         }
-
         #endregion
 
         #region Static methods

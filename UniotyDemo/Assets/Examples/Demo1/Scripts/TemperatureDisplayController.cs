@@ -12,7 +12,7 @@ public class TemperatureDisplayController : MonoBehaviour
     void Start()
     {
         uniotyMaster = FindObjectOfType<UniotyMasterController>();
-        uniotyMaster.GetDeviceControl(DeviceID, ControlID_HDC1000).DataReceived += OnHDCDataReceived;
+        uniotyMaster.GetDeviceControl(DeviceID, ControlID_HDC1000).DataChanged += OnHDCDataReceived;
         textMesh = GetComponent<TextMesh>();
     }
 
@@ -23,11 +23,11 @@ public class TemperatureDisplayController : MonoBehaviour
 
     void OnDestroy()
     {
-        uniotyMaster.GetDeviceControl(DeviceID, ControlID_HDC1000).DataReceived -= OnHDCDataReceived;
+        uniotyMaster.GetDeviceControl(DeviceID, ControlID_HDC1000).DataChanged -= OnHDCDataReceived;
     }
 
 
-    void OnHDCDataReceived(object sender, DataReceivedEventArgs e)
+    void OnHDCDataReceived(object sender, DataChangedEventArgs e)
     {
         float temperature = (float)e.Payload.Data;
         textMesh.text = string.Format("{0} C", temperature);

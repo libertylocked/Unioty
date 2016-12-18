@@ -5,6 +5,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Unioty.Controls;
+using Unioty.TcpHandlers;
 
 namespace Unioty
 {
@@ -13,6 +15,7 @@ namespace Unioty
         bool started = false;
         WriteLogDelegate WriteLog;
         DataReceivedCallback DataRecv;
+        DeviceControl[] virtualControls = new DeviceControl[256];
 
         TcpListener tcpListener;
         UdpClient udpListener;
@@ -29,6 +32,11 @@ namespace Unioty
             Port = port;
             WriteLog = writeLogFunc;
             DataRecv = dataReceiveFunc;
+            // Init virtual controls
+            for (int i = 0; i < 256; i++)
+            {
+                virtualControls[i] = new DeviceControl(0x00, (byte)i);
+            }
         }
 
         public void Start()
@@ -51,6 +59,36 @@ namespace Unioty
             udpListener.Close();
         }
 
+        public void ProcessData(byte devID, byte ctrlID, PayloadType payloadType, byte[] payloadRaw)
+        {
+            Payload payload = new Payload(payloadType, payloadRaw);
+
+            // Invoke the data recv callback function
+            if (DataRecv != null)
+            {
+                DataRecv.Invoke(devID, ctrlID, payload);
+            }
+        }
+
+        public void Log(string format, params object[] args)
+        {
+            if (WriteLog != null) WriteLog.Invoke(format, args);
+        }
+
+        public DeviceControl GetVirtualControl(byte controlID)
+        {
+            return virtualControls[controlID];
+        }
+
+        public void UpdateVirtualControls()
+        {
+            // This must be called to raise data changed events
+            foreach (var c in virtualControls)
+            {
+                c.Update();
+            }
+        }
+
         void SetupNetworkThreads()
         {
             // Thread that runs the UDP server
@@ -58,7 +96,7 @@ namespace Unioty
             {
                 udpListener = new UdpClient(Port);
                 IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, Port);
-                if (WriteLog != null) WriteLog.Invoke("Listening UDP {0}", Port);
+                Log("Listening UDP {0}", Port);
 
                 while (true)
                 {
@@ -74,7 +112,7 @@ namespace Unioty
                     }
                     catch (Exception exc)
                     {
-                        if (WriteLog != null) WriteLog.Invoke(exc.ToString());
+                        Log(exc.ToString());
                     }
                 }
             });
@@ -84,7 +122,7 @@ namespace Unioty
             {
                 tcpListener = new TcpListener(IPAddress.Any, Port);
                 tcpListener.Start();
-                if (WriteLog != null) WriteLog.Invoke("Listening TCP {0}", Port);
+                Log("Listening TCP {0}", Port);
                 StartAcceptTCP();
             });
         }
@@ -101,81 +139,50 @@ namespace Unioty
             NetworkStream stream = client.GetStream();
             int readLen = 0;
             byte[] buffer = new byte[1];
-            byte devID = 0;
+            byte opcode = 0;
+            TcpDeviceHandler handler = null;
 
             try
             {
-                // Read the device ID
-                // When devID is 0x00, the client is a poller
+                // Read 1 byte opcode
+                // 0x00 to read host control, 0x01 to write its control to host
                 readLen = stream.Read(buffer, 0, 1);
                 if (readLen != 1)
                 {
-                    throw new IOException("Unexpected read in device ID");
+                    throw new IOException("Unexpected read in opcode");
                 }
-                devID = buffer[0];
-                if (devID == 0x00) HandleTCPPollerConnection(client);
-                else HandleTCPPusherConnection(client, devID);
+                opcode = buffer[0];
+
+                // Dispatch opcode
+                if (opcode == 0x00)
+                {
+                    // This client wants to listen to a control on the host
+                    handler = new DeviceListenHandler(this, client);
+                }
+                else if (opcode == 0x01)
+                {
+                    // This client wants to push control data from the device to the game
+                    handler = new DevicePushHandler(this, client);
+                }
+                else
+                {
+                    throw new NotSupportedException("Opcode not supported: " + opcode);
+                }
+
+                // Let TcpHandler handle the connection
+                handler.HandleConnection();
             }
             catch (Exception exc)
             {
-                if (WriteLog != null) WriteLog.Invoke(exc.ToString());
+                Log(exc.ToString());
             }
             finally
             {
-                if (WriteLog != null) WriteLog.Invoke("TCP: Device {0} disconnected", devID);
+                Log("TCP: {0} disconnected", client.Client.RemoteEndPoint);
+                // Close the client handler
+                if (handler != null) handler.Close();
+                // Close the client
                 client.Close();
-            }
-        }
-
-        void HandleTCPPusherConnection(TcpClient client, byte devID)
-        {
-            NetworkStream stream = client.GetStream();
-            int readLen = 0;
-            byte[] buffer = new byte[1024];
-            
-            if (WriteLog != null) WriteLog.Invoke("TCP: Device {0} connected from {1}", devID, client.Client.RemoteEndPoint);
-
-            while (client.Connected)
-            {
-                // A message over TCP should follow this format
-                // [1 byte control ID, 1 byte payload type, 1 byte payload length, n byte payload]
-                // Read the first 3 bytes, [1 byte control ID, 1 byte payload type, 1 byte payload length]
-                readLen = stream.Read(buffer, 0, 3);
-                if (readLen == 0)
-                {
-                    break;
-                }
-                var controlID = buffer[0];
-                var payloadType = (PayloadType)buffer[1];
-                var payloadLen = buffer[2];
-                // Then read payloadLen bytes for the payload
-                readLen = stream.Read(buffer, 0, payloadLen);
-                if (readLen == 0)
-                {
-                    break;
-                }
-                var payload = buffer.Take(readLen).ToArray();
-                ProcessData(devID, controlID, payloadType, payload);
-            }
-        }
-
-        void HandleTCPPollerConnection(TcpClient client)
-        {
-            NetworkStream stream = client.GetStream();
-
-            if (WriteLog != null) WriteLog.Invoke("TCP: Poller connected from {0}", client.Client.RemoteEndPoint);
-
-
-        }
-
-        void ProcessData(byte devID, byte ctrlID, PayloadType payloadType, byte[] payloadRaw)
-        {
-            Payload payload = new Payload(payloadType, payloadRaw);
-
-            // Invoke the data recv callback function
-            if (DataRecv != null)
-            {
-                DataRecv.Invoke(devID, ctrlID, payload);
             }
         }
     }

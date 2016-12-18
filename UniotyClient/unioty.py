@@ -3,8 +3,8 @@ import socket
 import struct
 
 
-class UniotyHub(object):
-    """UniotyHub is a hub that communicates with a UniotyServer"""
+class UniotyPusher(object):
+    """UniotyPusher writes control data from a device to a host"""
 
     def __init__(self, device_id, server_ip, server_port):
         self.device_id = device_id
@@ -40,6 +40,16 @@ class UniotyHub(object):
             message.extend(packed)
         self.sock_tcp.sendall(message)
 
+    def connect_tcp(self):
+        """Sets up TCP connection to the server for writing"""
+        if self.sock_tcp != None:
+            self.sock_tcp.close()
+        self.sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        intro_message = bytearray()
+        intro_message.append(0x01) # opcode for PUSH
+        intro_message.append(self.device_id)
+        self.sock_tcp.connect(self.server_address)
+        self.sock_tcp.sendall(intro_message)
 
     def write_tcp_float(self, control_id, data):
         """Sends a float32 to server through TCP"""
@@ -60,16 +70,6 @@ class UniotyHub(object):
     def write_tcp_raw(self, control_id, data):
         """Sends a byte array to server through TCP"""
         self.__write_tcp(control_id, 'r', data)
-
-    def connect_tcp(self):
-        """Set up TCP connection to the server"""
-        if self.sock_tcp != None:
-            self.sock_tcp.close()
-        self.sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        intro_message = bytearray()
-        intro_message.append(self.device_id)
-        self.sock_tcp.connect(self.server_address)
-        self.sock_tcp.sendall(intro_message)
 
     def write_udp_float(self, control_id, data):
         """Sends a float32 to server through UDP"""
@@ -92,27 +92,53 @@ class UniotyHub(object):
         self.__write_udp(control_id, 'r', data)
 
 
-def setup(device_id, server_ip, server_port):
-    """Set up server connection"""
-    return UniotyHub(device_id, server_ip, server_port)
+class UniotyPoller(object):
+    """UniotyPoller reads host's controls through the network"""
+
+    def __init__(self, server_ip, server_port):
+        self.server_address = (server_ip, server_port)
+
+    def read_host_control(self, control_id, callback):
+        """Connects to host and invokes callback whenever control data is changed"""
+        sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock_tcp.connect(self.server_address)
+        intro_message = bytearray()
+        intro_message.append(0x00) # opcode for POLL
+        intro_message.append(control_id) # control id as byte
+        sock_tcp.sendall(intro_message)
+        while True:
+            recv_ctrl_id = sock_tcp.recv(1)
+            # Assert it is the same control we subscribed
+            #assert recv_ctrl_id == control_id
+            data_type = sock_tcp.recv(1)
+            data_len = sock_tcp.recv(1)
+            data_raw = sock_tcp.recv(int(data_len.encode('hex'), 16))
+            data = None
+            # Convert data
+            if data_type == 's' or data_type == 'r':
+                data = data_raw
+            else:
+                data = struct.unpack('<'+data_type, data_raw)
+            # Invoke callback
+            callback(data)
+
+
+def setup_pusher(device_id, server_ip, server_port):
+    """Sets up server connection for pushing device control"""
+    return UniotyPusher(device_id, server_ip, server_port)
+
+def setup_poller(server_ip, server_port):
+    """Sets up for reading host control"""
+    return UniotyPoller(server_ip, server_port)
 
 def main():
-    """The main function. For testing only"""
-    hub = setup(0x01, 'localhost', 25556)
-    # UDP test writes
-    hub.write_udp_float(0x01, 9.45)
-    hub.write_udp_int(0x02, 1999)
-    hub.write_udp_byte(0x03, 0xff)
-    hub.write_udp_string(0x04, "hello!")
-    hub.write_udp_raw(0x05, bytearray([0x01, 0x03, 0x05]))
-    # TCP test writes
-    hub.connect_tcp()
-    hub.write_tcp_float(0x06, 0.02)
-    hub.write_tcp_int(0x07, 2006)
-    hub.write_tcp_byte(0x08, 0xff)
-    hub.write_tcp_string(0x09, "world!")
-    hub.write_tcp_raw(0x0a, bytearray([0x00, 0x02, 0x04]))
+    """Main function for testing"""
+    poller = setup_poller('localhost', 25556)
+    poller.read_host_control(0x00, print_to_screen)
 
+def print_to_screen(data):
+    """Print data to screen"""
+    print data
 
 if __name__ == "__main__":
     main()

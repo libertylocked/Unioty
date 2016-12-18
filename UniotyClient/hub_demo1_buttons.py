@@ -20,7 +20,7 @@ MAG_SWITCH_CTRL_ID = 0x02
 
 def main():
     """The main function"""
-    hub = unioty.setup(DEV_ID, SERVER_IP, SERVER_PORT)
+    hub = unioty.setup_pusher(DEV_ID, SERVER_IP, SERVER_PORT)
     print 'TCP connecting to', SERVER_IP, SERVER_PORT
     hub.connect_tcp()
     print 'TCP connected'

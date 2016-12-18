@@ -1,4 +1,6 @@
-﻿namespace Unioty
+﻿using Unioty.Controls;
+
+namespace Unioty
 {
     /// <summary>
     /// A callback function that is invoked after data from a Unioty device is received and parsed

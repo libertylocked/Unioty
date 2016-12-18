@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unioty.Controls;
 
 namespace Unioty
 {
@@ -12,7 +13,6 @@ namespace Unioty
 
         UniotyServer server;
         Dictionary<int, DeviceControl> controlMap = new Dictionary<int, DeviceControl>();
-        Queue deviceDataQueue = Queue.Synchronized(new Queue()); // Queue used to read data from device
 
         public int Port
         {
@@ -36,20 +36,11 @@ namespace Unioty
 
         public void Update()
         {
-            for (int i = 0; i < MAX_EVENTS_PER_UPDATE; i++)
+            foreach (var control in controlMap.Values)
             {
-                if (deviceDataQueue.Count <= 0) break;
-                var e = deviceDataQueue.Dequeue();
-                if (e != null)
-                {
-                    // Raise the received event for this control
-                    var args = (DataReceivedEventArgs)e;
-                    if (controlMap.ContainsKey(args.ControlCode))
-                    {
-                        controlMap[args.ControlCode].RaiseDataReceivedEvent(args);
-                    }
-                }
+                control.Update();
             }
+            server.UpdateVirtualControls();
         }
 
         /// <summary>
@@ -71,8 +62,14 @@ namespace Unioty
 
         void OnDataReceived(byte devID, byte ctrlID, Payload payload)
         {
-            var args = new DataReceivedEventArgs(devID, ctrlID, payload);
-            deviceDataQueue.Enqueue(args);
+            // Find the control in the map
+            var control = GetDeviceControl(devID, ctrlID);
+            control.Payload = payload;
+        }
+
+        public DeviceControl GetVirtualControl(byte controlID)
+        {
+            return server.GetVirtualControl(controlID);
         }
     }
 }

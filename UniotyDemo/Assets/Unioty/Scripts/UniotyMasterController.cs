@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Unioty;
+using Unioty.Controls;
 
 public class UniotyMasterController : MonoBehaviour
 {
@@ -18,6 +19,16 @@ public class UniotyMasterController : MonoBehaviour
     public DeviceControl GetDeviceControl(byte devID, byte ctrlID)
     {
         return serverUpdater.GetDeviceControl(devID, ctrlID);
+    }
+
+    /// <summary>
+    /// Gets a virtual control on the host
+    /// </summary>
+    /// <param name="ctrlID"></param>
+    /// <returns></returns>
+    public DeviceControl GetVirtualControl(byte ctrlID)
+    {
+        return serverUpdater.GetVirtualControl(ctrlID);
     }
     #endregion
 

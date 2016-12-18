@@ -11,7 +11,7 @@ HDC_CTRL_ID = 0x03
 
 def main():
     """The main function"""
-    hub = unioty.setup(DEV_ID, SERVER_IP, SERVER_PORT)
+    hub = unioty.setup_pusher(DEV_ID, SERVER_IP, SERVER_PORT)
 
     hdc = HDC1000()
     hdc.Config()
