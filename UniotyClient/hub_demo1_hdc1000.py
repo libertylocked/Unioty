@@ -7,7 +7,7 @@ from grove_i2c_temp_hum_hdc1000 import HDC1000
 SERVER_IP = '192.168.0.2'
 SERVER_PORT = 25556
 DEV_ID = 0x01
-HDC_CTRL_ID = 0x03
+HDC_CTRL_ID = 0x02
 
 def main():
     """The main function"""

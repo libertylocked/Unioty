@@ -14,7 +14,7 @@ colorBlack = 0
 
 SERVER_IP = '192.168.0.2'
 SERVER_PORT = 25556
-HOST_HEIGHT_CTRL_ID = 0x00
+HOST_HEIGHT_CTRL_ID = 0x01
 
 def main():
     """The main function"""

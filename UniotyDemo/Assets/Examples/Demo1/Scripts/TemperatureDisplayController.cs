@@ -7,7 +7,7 @@ public class TemperatureDisplayController : MonoBehaviour
     TextMesh textMesh;
 
     public byte DeviceID = 0x01;
-    public byte ControlID_HDC1000 = 0x03;
+    public byte ControlID_HDC1000 = 0x02;
 
     void Start()
     {
