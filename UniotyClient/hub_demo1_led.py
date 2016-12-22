@@ -28,8 +28,8 @@ def main():
 
 def on_off_led(data):
     """Turn on or off LED based on data"""
-    print data[0]
-    if data[0] == 1:
+    print data
+    if data == 1:
         # turn on LED
         grovepi.storeColor(255, 95, 74)
         grovepi.chainableRgbLed_pattern(LED, 0, 0)

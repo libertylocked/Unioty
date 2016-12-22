@@ -98,6 +98,15 @@ class UniotyPoller(object):
     def __init__(self, server_ip, server_port):
         self.server_address = (server_ip, server_port)
 
+    def __convert_data_from_raw(self, data_type, data_raw):
+        data = None
+        # Convert data
+        if data_type == 's' or data_type == 'r':
+            data = data_raw
+        else:
+            data = struct.unpack('<'+data_type, data_raw)[0]
+        return data
+
     def read_host_control(self, control_id, callback):
         """Connects to host and invokes callback whenever control data is changed"""
         sock_tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -107,18 +116,13 @@ class UniotyPoller(object):
         intro_message.append(control_id) # control id as byte
         sock_tcp.sendall(intro_message)
         while True:
-            recv_ctrl_id = sock_tcp.recv(1)
+            recv_ctrl_id = struct.unpack('B', sock_tcp.recv(1))[0]
             # Assert it is the same control we subscribed
-            #assert recv_ctrl_id == control_id
+            assert recv_ctrl_id == control_id
             data_type = sock_tcp.recv(1)
-            data_len = sock_tcp.recv(1)
-            data_raw = sock_tcp.recv(int(data_len.encode('hex'), 16))
-            data = None
-            # Convert data
-            if data_type == 's' or data_type == 'r':
-                data = data_raw
-            else:
-                data = struct.unpack('<'+data_type, data_raw)
+            data_len = struct.unpack('B', sock_tcp.recv(1))[0]
+            data_raw = sock_tcp.recv(data_len)
+            data = self. __convert_data_from_raw(data_type, data_raw)
             # Invoke callback
             callback(data)
 
@@ -134,7 +138,7 @@ def setup_poller(server_ip, server_port):
 def main():
     """Main function for testing"""
     poller = setup_poller('localhost', 25556)
-    poller.read_host_control(0x00, print_to_screen)
+    poller.read_host_control(0x01, print_to_screen)
 
 def print_to_screen(data):
     """Print data to screen"""
