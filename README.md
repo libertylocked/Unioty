@@ -1,16 +1,13 @@
-# UnioTy
+# Unioty - IoT platform for Unity
 Connect IoT devices to your Unity game!
 
 ## Features
-- Allows IoT devices to send data to your game
+- Allows IoT devices to react to in-game events
+- Allows your game to respond to events published by IoT devices
 - Both TCP and UDP are supported!
   - TCP for triggers (e.g. button presses and releases)
   - UDP for PWM and analog data (e.g. temperature readings, ultrasonic ranger readings)
-- Event-based callbacks: GameObjects who subscribe to a data source will be notified when data is ready
-
-## Possible use cases
-- Real time sensor data visualization
-- Game peripherals
+- Event-based callbacks
 
 ## Demos
 - See [UniotyClient/README.md](UniotyClient/README.md)
