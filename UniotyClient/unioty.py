@@ -101,8 +101,13 @@ class UniotyPoller(object):
     def __convert_data_from_raw(self, data_type, data_raw):
         data = None
         # Convert data
-        if data_type == 's' or data_type == 'r':
+        if data_type == 's':
+            # String doesn't need conversion
             data = data_raw
+        if data_type == 'r':
+            # Convert raw to bytearray
+            data = bytearray()
+            data.extend(data_raw)
         else:
             data = struct.unpack('<'+data_type, data_raw)[0]
         return data
