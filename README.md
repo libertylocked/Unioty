@@ -8,6 +8,7 @@ Connect IoT devices to your Unity game!
   - TCP for triggers (e.g. button presses and releases)
   - UDP for PWM and analog data (e.g. temperature readings, ultrasonic ranger readings)
 - Event-based callbacks
+- When used with VR, you can control real objects through virtual objects, and vice versa
 
 ## Demos
 - See [UniotyClient/README.md](UniotyClient/README.md)
