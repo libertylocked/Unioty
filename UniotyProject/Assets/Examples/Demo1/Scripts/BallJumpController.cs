@@ -34,7 +34,7 @@ public class BallJumpController : MonoBehaviour
         // This event is not raised every frame - only when state changes
         if ((byte)e.Payload.Data == 1)
         {
-            rb.velocity = (Vector3.up * 5.0f);
+            rb.AddForce(Vector3.up * 5.0f, ForceMode.VelocityChange);
         }
     }
 }
